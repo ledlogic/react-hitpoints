@@ -1,18 +1,9 @@
 h1, h2, h3, h4 {
-  padding: 10px;
+  padding: 10px 0 10px 0;
 }
 
 table tr td {
   text-align: center;
-  width: 50%;
-}
-
-input.statistic {
-  width: 60px;
-}
-
-input.modifier {
-  width: 50px;
 }
 
 .navbar {
@@ -23,12 +14,41 @@ input.modifier {
 
 #character {
   margin: 0 auto;
-  width: 400px;
 }
 
-#statistics {
+.stat-desc {
+  font-size: 8px;
+  line-height: 10px;
+}
+
+table#statistics {
   border: 1px solid #20232a;
   padding: 20px;
+}
+
+table#statistics tr td {
+  line-height: 14px;
+}
+
+table#statistics tr td.stat-label {
+  background-color: #000000;
+  color: #ffffff;
+  width: 50px;
+}
+
+table#statistics tr td .stat-value {
+}
+
+input.stat-value {
+  width: 60px;
+}
+
+*:focus {
+  outline: none;
+}
+
+input.stat-modifier {
+  width: 50px;
 }
 
 #levels {
