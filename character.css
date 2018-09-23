@@ -1,3 +1,12 @@
+h1, h2, h3, h4 {
+  padding: 10px;
+}
+
+table tr td {
+  text-align: center;
+  width: 50%;
+}
+
 input.statistic {
   width: 60px;
 }
@@ -13,11 +22,24 @@ input.modifier {
 }
 
 #character {
-  border: 1px solid #20232a;
   margin: 0 auto;
   width: 400px;
 }
 
-table tbody td {
-  width: 50%;
+#statistics {
+  border: 1px solid #20232a;
+  padding: 20px;
+}
+
+#levels {
+  border: 1px solid #20232a;
+  padding: 20px;
+}
+
+#levels tbody tr:nth-child(even){
+  background-color: #e2e2e2;
+}
+
+#levels tbody tr:nth-child(odd){
+  background-color: #f2f2f2;
 }

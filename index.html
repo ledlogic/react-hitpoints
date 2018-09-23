@@ -1,21 +1,29 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+
     <title>PFS Hitpoint Calculator in react.js</title>
+
+    <!-- style includes -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="character.css">
   </head>
   <body>
     <header class="navbar">Hitpoint Calculator</header>
     <div class="container-fluid">
-      <h1>Character</h1>
-      <h3>Statistics</h3>
       <div id="character"></div>
     </div>
+
+    <!-- script includes -->
     <script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+    <!-- babel for jsx syntax conversion -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+
+    <!-- app files -->
     <script type="text/babel" src="character.js"></script>
   </body>
 </html>
