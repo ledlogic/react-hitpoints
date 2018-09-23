@@ -1,0 +1,23 @@
+input.statistic {
+  width: 60px;
+}
+
+input.modifier {
+  width: 50px;
+}
+
+.navbar {
+  background-color: #20232a;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+#character {
+  border: 1px solid #20232a;
+  margin: 0 auto;
+  width: 400px;
+}
+
+table tbody td {
+  width: 50%;
+}
