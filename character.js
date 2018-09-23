@@ -1,20 +1,157 @@
 'use strict';
 
 class Character extends React.Component {
+
   constructor(props) {
     super(props);
-    this.state = {con: 10, feats:{ toughness: false }, favoredClassLevels: {}};
+    this.state = {
+      con: 10,
+      feats:{ toughness: false },
+      favoredClassLevels: {},
+      classIndex: 6,
+      classes: [
+        {
+          name: "Alchemist",
+          hitdie: "d8"
+        },
+        {
+          name: "Arcanist",
+          hitdie: "d6"
+        },
+        {
+          name: "Barbarian",
+          hitdie: "d12"
+        },
+        {
+          name: "Bard",
+          hitdie: "d8"
+        },
+        {
+          name: "Bloodrager",
+          hitdie: "d10"
+        },
+        {
+          name: "Brawler",
+          hitdie: "d10"
+        },
+        {
+          name: "Cavalier",
+          hitdie: "d10"
+        },
+        {
+          name: "Cleric",
+          hitdie: "d8"
+        },
+        {
+          name: "Druid",
+          hitdie: "d8"
+        },
+        {
+          name: "Fighter",
+          hitdie: "d10"
+        },
+        {
+          name: "Gunslinger",
+          hitdie: "d10"
+        },
+        {
+          name: "Inquisitor",
+          hitdie: "d8"
+        },
+        {
+          name: "Investigator",
+          hitdie: "d8"
+        },
+        {
+          name: "Magus",
+          hitdie: "d8"
+        },
+        {
+          name: "Monk",
+          hitdie: "d8"
+        },
+        {
+          name: "Ninja",
+          hitdie: "d8"
+        },
+        {
+          name: "Oracle",
+          hitdie: "d8"
+        },
+        {
+          name: "Paladin",
+          hitdie: "d10"
+        },
+        {
+          name: "Ranger",
+          hitdie: "d10"
+        },
+        {
+          name: "Rogue",
+          hitdie: "d8"
+        },
+        {
+          name: "Samurai",
+          hitdie: "d10"
+        },
+        {
+          name: "Shaman",
+          hitdie: "d8"
+        },
+        {
+          name: "Slayer",
+          hitdie: "d10"
+        },
+        {
+          name: "Sorcerer",
+          hitdie: "d6"
+        },
+        {
+          name: "Summoner",
+          hitdie: "d8"
+        },
+        {
+          name: "Swashbuckler",
+          hitdie: "d10"
+        },
+        {
+          name: "Warpriest",
+          hitdie: "d8"
+        },
+        {
+          name: "Witch",
+          hitdie: "d6"
+        },
+        {
+          name: "Wizard",
+          hitdie: "d6"
+        }
+      ]
+    };
     this.handleChange = this.handleChange.bind(this);
   }
 
+// our methods
+
   capitalize(str){
     return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
+  hitdie() {
+    const i = this.state.classIndex;
+    const aClass = this.state.classes[i];
+    const hitdie = aClass.hitdie;
+    return hitdie;
   }
 
   isLevelFavored(level) {
     var cl = this.state.favoredClassLevels[level];
     var ret = typeof(cl) == "undefined" ? true : !!cl;
     return ret;
+  }
+
+  isSelectedClass(i) {
+    return i == this.state.classIndex
   }
 
   isFeatEnabled(feat) {
@@ -46,6 +183,14 @@ class Character extends React.Component {
     this.setState(c);
   }
 
+  doChangeClass(t) {
+    console.log(t);
+    const i = t.selectedIndex;
+    var c = {};
+    c.classIndex = i;
+    this.setState(c);
+  }
+
   doChangeLevelFavored(level, state) {
     var levels = this.state.favoredClassLevels;
     levels[level] = state;
@@ -73,7 +218,12 @@ class Character extends React.Component {
         this.doChangeStat(t);
         break;
 
+      case "characterClass":
+        this.doChangeClass(t);
+        break;
+
       default: ;
+        break;
     }
   }
 
@@ -94,7 +244,29 @@ class Character extends React.Component {
   render() {
     var levelRows = [];
     var maxLevel = 20;
-    var base = 10;
+
+// feats
+    var featRows = [];
+    for (var feat in this.state.feats) {
+      featRows.push(
+        <tr>
+          <td>{this.capitalize(feat)}</td>
+          <td><input type="checkbox" name={feat} data-feat={feat} className="feat" checked={this.isFeatEnabled({feat})} onChange={this.handleFeatClick.bind(this)} /></td>
+        </tr>
+      );
+    }
+
+// classes
+    var classOptions = [];
+    for (var i = 0; i < this.state.classes.length; i++) {
+      var aClass = this.state.classes[i];
+      classOptions.push(
+        <option value={aClass.name} selected={this.isSelectedClass(i)}>{aClass.name}</option>
+      )
+    }
+
+// hitpoints
+    var base = parseInt(this.hitdie().substring(1),10);
     var con = this.modifier("con");
     var avg = Math.ceil((base / 2) + 1);
     var totalFavored = 0;
@@ -112,27 +284,19 @@ class Character extends React.Component {
       }
       var hitpoints = (base + con) + (level - 1) * (avg + con) + totalFavored + totalToughness;
       levelRows.push(
-          <tr>
-            <td>{level}:</td>
-            <td><input type="checkbox" name="favored" data-level={level} className="level-favored" checked={this.isLevelFavored(level)} onChange={this.handleLevelClick.bind(this)} /></td>
-            <td>{hitpoints}</td>
-          </tr>);
-    }
-
-    var featRows = [];
-    for (var feat in this.state.feats) {
-      featRows.push(
         <tr>
-          <td>{this.capitalize(feat)}</td>
-          <td><input type="checkbox" name={feat} data-feat={feat} className="feat" checked={this.isFeatEnabled({feat})} onChange={this.handleFeatClick.bind(this)} /></td>
-        </tr>);
+          <td>{level}:</td>
+          <td><input type="checkbox" name="favored" data-level={level} className="level-favored" checked={this.isLevelFavored(level)} onChange={this.handleLevelClick.bind(this)} /></td>
+          <td>{hitpoints}</td>
+        </tr>
+      );
     }
 
     return (
       <div>
         <h3>Class</h3>
-        <select id="characterClass" value={this.state.value} onChange={this.handleChange.bind(this)}>
-          <option value="fighter">Fighter</option>
+        <select id="characterClass" onChange={this.handleChange.bind(this)}>
+          {classOptions}
         </select>
 
         <h3>Statistics</h3>
