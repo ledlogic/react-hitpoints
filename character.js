@@ -3,12 +3,23 @@
 class Character extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {con: 10, levels: {}};
+    this.state = {con: 10, feats:{ toughness: false }, favoredClassLevels: {}};
     this.handleChange = this.handleChange.bind(this);
   }
 
+  capitalize(str){
+    return str.charAt(0).toUpperCase() + str.slice(1);
+  }
+
   isLevelFavored(level) {
-    return !!this.state.levels[level];
+    var cl = this.state.favoredClassLevels[level];
+    var ret = typeof(cl) == "undefined" ? true : !!cl;
+    return ret;
+  }
+
+  isFeatEnabled(feat) {
+    var ret = this.state.feats[feat];
+    return ret;
   }
 
   modifier(statistic) {
@@ -36,12 +47,18 @@ class Character extends React.Component {
   }
 
   doChangeLevelFavored(level, state) {
-    //console.log(this.state.levels[level])
-    var levels = this.state.levels;
+    var levels = this.state.favoredClassLevels;
     levels[level] = state;
-    //console.log(this.state.levels[level])
     var c = {};
-    c.levels = levels;
+    c.favoredClassLevels = levels;
+    this.setState(c);
+  }
+
+  doChangeFeatEnabled(feat, state) {
+    var feats = this.state.feats;
+    feats[feat] = state;
+    var c = {};
+    c.feats = feats;
     this.setState(c);
   }
 
@@ -67,6 +84,13 @@ class Character extends React.Component {
     this.doChangeLevelFavored(level, state);
   }
 
+  handleFeatClick(e) {
+    var t = e.target;
+    var feat = t.getAttribute("data-feat");
+    var state = t.checked;
+    this.doChangeFeatEnabled(feat, state);
+  }
+
   render() {
     var levelRows = [];
     var maxLevel = 20;
@@ -74,17 +98,34 @@ class Character extends React.Component {
     var con = this.modifier("con");
     var avg = Math.ceil((base / 2) + 1);
     var totalFavored = 0;
+    var toughness = this.isFeatEnabled("toughness");
+    var totalToughness = 0;
+    if (toughness) {
+      totalToughness += 3;
+    }
     for (var level = 1; level < maxLevel; level++) {
       if (this.isLevelFavored(level)) {
         totalFavored++;
       }
-      var hitpoints = (base + con) + (level - 1) * (avg + con) + totalFavored;
+      if (toughness && level >= 4) {
+        totalToughness++;
+      }
+      var hitpoints = (base + con) + (level - 1) * (avg + con) + totalFavored + totalToughness;
       levelRows.push(
           <tr>
             <td>{level}:</td>
             <td><input type="checkbox" name="favored" data-level={level} className="level-favored" checked={this.isLevelFavored(level)} onChange={this.handleLevelClick.bind(this)} /></td>
             <td>{hitpoints}</td>
           </tr>);
+    }
+
+    var featRows = [];
+    for (var feat in this.state.feats) {
+      featRows.push(
+        <tr>
+          <td>{this.capitalize(feat)}</td>
+          <td><input type="checkbox" name={feat} data-feat={feat} className="feat" checked={this.isFeatEnabled({feat})} onChange={this.handleFeatClick.bind(this)} /></td>
+        </tr>);
     }
 
     return (
@@ -109,6 +150,13 @@ class Character extends React.Component {
           </tbody>
         </table>
 
+        <h3>Feats</h3>
+        <table id="feats">
+          <tbody>
+            {featRows}
+          </tbody>
+        </table>
+
         <h3>Levels</h3>
         <table id="levels">
           <thead>
@@ -126,6 +174,12 @@ class Character extends React.Component {
         <h3>Favored Class</h3>
         <p>
           Each character begins play with a single favored class of his choosing—typically, this is the same class as the one he chooses at 1st level. Whenever a character gains a level in his favored class, he receives either + 1 hit point or + 1 skill rank. The choice of favored class cannot be changed once the character is created, and the choice of gaining a hit point or a skill rank each time a character gains a level (including his first level) cannot be changed once made for a particular level. Prestige classes (see Prestige Classes) can never be a favored class.
+        </p>
+
+        <h3>Toughness</h3>
+        <p>
+          You have enhanced physical stamina.
+          Benefit: You gain +3 hit points. For every Hit Die you possess beyond 3, you gain an additional +1 hit point. If you have more than 3 Hit Dice, you gain +1 hit points whenever you gain a Hit Die (such as when you gain a level).
         </p>
       </div>
     );
